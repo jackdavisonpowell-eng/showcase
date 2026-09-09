@@ -1,0 +1,354 @@
+{
+ "generated": "2026-09-09T14:28:32",
+ "projects": [
+  {
+   "title": "AUTOGOD",
+   "kicker": "autonomous agent system",
+   "date": "2026-09",
+   "status": "live",
+   "feature": true,
+   "tags": [
+    "agents",
+    "local llm"
+   ],
+   "href": "https://github.com/jackdavisonpowell-eng/autogod-v3",
+   "stats": [
+    [
+     "brain",
+     "Qwen3.8-27B Q4"
+    ],
+    [
+     "runs on",
+     "2x Tesla P100"
+    ],
+    [
+     "idle GPU hours",
+     "0"
+    ]
+   ],
+   "cover": "autogod.jpg",
+   "slug": "autogod",
+   "html": "<h2>What it is</h2>\n<p>AUTOGOD is an autonomous agent that runs on my own hardware, around the clock, without me driving it. It holds a goal, breaks that goal into work, builds the work, and then judges honestly whether what it built was worth building.</p>\n<h2>Why it exists</h2>\n<p>Two Tesla P100s sitting idle overnight is wasted electricity and wasted capability. Every hour those cards are not doing something is an hour I paid for and got nothing back from. AUTOGOD exists so that the answer to \"what is the machine doing right now\" is never \"nothing\".</p>\n<h2>How it works</h2>\n<p>It runs one loop. An idea gets proposed, a plan gets written against it, a prototype gets built, and the result gets polished and pushed onto a shelf where I decide to keep it or kill it. Each stage is a fresh pass, so a bad plan does not quietly poison the build.</p>\n<p>When the queue of real work is empty it is allowed to pick its own project. The constraint is deliberately tight: single file where possible, standard library only, no package manager, no build step, and it has to actually run from a clean shell before it is permitted to mark itself done.</p>\n<h2>The hard part</h2>\n<p>Autonomy is easy to demo and hard to leave running. The version that works is not the one that is cleverest, it is the one that fails safely at three in the morning. Most of the real engineering went into gates rather than capability: cooldowns so it cannot spin, stack caps so it cannot pile work on itself, and a hard rule that it never gets root and never elevates its own privileges.</p>\n<p>The other hard part was honesty. An agent that rates its own work will rate it generously unless the rating is structured. It writes down what it set out to do and what it actually got, separately, and I read both.</p>",
+   "excerpt": "AUTOGOD is an autonomous agent that runs on my own hardware, around the clock,\nwithout me driving it. It holds a goal, breaks that goal into work, builds the\nwork, and then judges honestly whether wh…",
+   "file": "AUTOGOD.md"
+  },
+  {
+   "title": "FRIDAY",
+   "kicker": "local voice assistant",
+   "date": "2026-09",
+   "status": "live",
+   "tags": [
+    "voice",
+    "local llm"
+   ],
+   "stats": [
+    [
+     "runs on",
+     "V100 32GB"
+    ],
+    [
+     "ASR",
+     "whisper.cpp"
+    ],
+    [
+     "leaves the house",
+     "nothing"
+    ]
+   ],
+   "cover": "friday.jpg",
+   "slug": "friday",
+   "html": "<h2>What it is</h2>\n<p>A voice assistant that runs entirely on one 32GB Tesla V100 in my house. Wake word, speech recognition, a 27B brain, and a synthesised voice — all of it local. No API key, no request leaving the network, no per-token bill.</p>\n<h2>Why local</h2>\n<p>Every cloud assistant is a microphone in your house pointed at somebody else's server. That is the whole objection and it is enough on its own. The practical argument is just as strong though: latency is mine to fix, the model does not change under me without warning, and there is no usage meter running while I think about what to say.</p>\n<h2>How it works</h2>\n<p>Audio comes in, a wake word gate decides whether to care, whisper.cpp turns speech into text, the local model answers, and a text-to-speech pass turns it back into a voice. A Raspberry Pi satellite in another room does the listening and speaking there, so the assistant is not tied to one desk.</p>\n<h2>The hard part</h2>\n<p>Latency, and it was not the model. Getting a first token out fast turned out to be dominated by prefill, not generation, and no amount of picking a smaller model would have fixed it. That took real measurement to find, and measurement is the only reason it got fixed.</p>\n<p>The second hard part is that a voice assistant lives or dies on texture rather than features. A correct answer delivered flatly feels worse than a slightly worse answer that sounds like something is actually there. Most of the tuning after it worked was spent on that, not on capability.</p>",
+   "excerpt": "A voice assistant that runs entirely on one 32GB Tesla V100 in my house. Wake\nword, speech recognition, a 27B brain, and a synthesised voice — all of it\nlocal. No API key, no request leaving the netw…",
+   "file": "FRIDAY.md"
+  },
+  {
+   "title": "Fleet Console",
+   "kicker": "the wall everything is run from",
+   "date": "2026-09",
+   "status": "live",
+   "tags": [
+    "web",
+    "agents"
+   ],
+   "href": "https://fleet.autogod.org/",
+   "stats": [
+    [
+     "pages",
+     "1"
+    ],
+    [
+     "GPUs managed",
+     "3"
+    ],
+    [
+     "auth",
+     "required"
+    ]
+   ],
+   "cover": "fleet.jpg",
+   "slug": "fleet-console",
+   "html": "<h2>What it is</h2>\n<p>One page, no tabs, that shows every agent, every GPU, every model, and what each of them is doing right now. It is the only place I need to look to know the state of the whole machine, and the only place I need to touch to change it.</p>\n<h2>Why one page</h2>\n<p>I built the tabbed version first and stopped using it within a week. Anything behind a tab may as well not exist, because checking it costs a decision. A wall you can take in at a glance is the difference between infrastructure you monitor and infrastructure you ignore.</p>\n<p>Colour carries exactly one meaning: amber means something wants me. Everything else stays monochrome. If the wall is white, nothing needs me, and I can walk away from it.</p>\n<h2>How it works</h2>\n<p>Agents report their own state — what they are doing, how much context they have burned, whether they are stuck waiting on a human. The console collects those, and it also owns the layout: which model is loaded onto which card.</p>\n<p>That last part is the useful bit. FRIDAY wants the V100 and AUTOGOD wants the P100 pair, but not at the same time and not always in that shape. I can change the whole allocation from the wall and the rig re-lays-out itself.</p>\n<h2>The hard part</h2>\n<p>Doing a layout swap without dropping a session that was mid-answer. Naively you unload everything and reload into the new shape, and anything in flight dies. Getting it to hand over cleanly, with the sessions surviving, took more care than the entire rest of the page.</p>",
+   "excerpt": "One page, no tabs, that shows every agent, every GPU, every model, and what\neach of them is doing right now. It is the only place I need to look to know\nthe state of the whole machine, and the only p…",
+   "file": "Fleet Console.md"
+  },
+  {
+   "title": "The Cofounder",
+   "kicker": "an assistant that argues back",
+   "date": "2026-09",
+   "status": "building",
+   "tags": [
+    "agents",
+    "voice"
+   ],
+   "stats": [
+    [
+     "interface",
+     "TUI + voice"
+    ],
+    [
+     "board",
+     "15 agents"
+    ]
+   ],
+   "cover": "cofounder.jpg",
+   "slug": "the-cofounder",
+   "html": "<h2>What it is</h2>\n<p>A sparring partner. I bring it a half-formed idea, it pushes back on the idea until it is sharp, and only then does it hand the finished brief to worker sessions and relay what they report.</p>\n<h2>Why it exists</h2>\n<p>An assistant that agrees with you is worse than no assistant, because it launders a bad idea into a plan and then you spend two days building the bad idea. What I actually want at the start of a project is someone to tell me the premise is wrong.</p>\n<h2>How it works</h2>\n<p>Two roles kept deliberately separate. The cofounder argues; it does not build. When the idea survives the argument it gets dispatched to worker sessions that do the building, and the cofounder goes back to relaying and critiquing rather than doing the work itself.</p>\n<p>There is a terminal interface and a headset voice loop, because the arguing part genuinely works better out loud than typed. Talking through a bad idea exposes it faster than writing it down does.</p>\n<h2>Where it is</h2>\n<p>Still building. The dispatch side works and the argument side is good; what is not settled is how much authority it should have to say no, and how to keep it from being contrarian for its own sake, which is a different failure and just as useless as agreement.</p>",
+   "excerpt": "A sparring partner. I bring it a half-formed idea, it pushes back on the idea\nuntil it is sharp, and only then does it hand the finished brief to worker\nsessions and relay what they report.",
+   "file": "The Cofounder.md"
+  },
+  {
+   "title": "The Lab",
+   "kicker": "everything AUTOGOD built in its spare time",
+   "date": "2026-09",
+   "status": "live",
+   "feature": true,
+   "tags": [
+    "agents",
+    "web"
+   ],
+   "href": "https://github.com/jackdavisonpowell-eng/lab",
+   "stats": [
+    [
+     "projects",
+     "27"
+    ],
+    [
+     "lines",
+     "12,136"
+    ],
+    [
+     "human review",
+     "none"
+    ]
+   ],
+   "cover": "lab.jpg",
+   "slug": "the-lab",
+   "html": "<h2>What it is</h2>\n<p>A public repository of twenty-seven small programs, every one of them written by AUTOGOD on its own, unattended, mostly overnight. Nobody reviewed them before they landed. The commit timestamps are real.</p>\n<h2>What is in it</h2>\n<p>A live host dashboard for the machine it runs on. The GPUs drawn as a pair of breathing lungs. My vault's note titles falling as matrix rain. A pixel face with twelve moods, built for the Raspberry Pi on my desk. A gauge cluster for my GR86. A lap timer with a delta strip. A tennis ladder with real ELO. A cutting-layout tool for sewing jeans. Swipe-to-rate procedurally generated horses, which I did not ask for and would not have thought of.</p>\n<h2>Why it is worth showing</h2>\n<p>This is the honest version of the autonomous-agent claim. It is not a demo video and it is not a curated best-of. It is the whole shelf, including the things that turned out to be pointless, with the agent's own rating of each one attached.</p>\n<p>Twenty-two of them are web pages, three are terminal programs, two are data experiments. Each was verified by actually starting it from a clean shell and loading it, not by asking the model whether it worked.</p>\n<h2>The hard part</h2>\n<p>Getting a local 27B model to finish something in one sitting means removing every excuse it has to sprawl. The rules do that work: one file, standard library, no network at runtime, no build step. A model that cannot reach for a package manager has to actually solve the problem in front of it.</p>\n<p>The failure mode I did not expect was ambition. Left unconstrained it would start something enormous and abandon it half-built. Small and finished beats large and theoretical, and the rules are how that gets enforced.</p>",
+   "excerpt": "A public repository of twenty-seven small programs, every one of them written\nby AUTOGOD on its own, unattended, mostly overnight. Nobody reviewed them\nbefore they landed. The commit timestamps are r…",
+   "file": "The Lab.md"
+  },
+  {
+   "title": "embedd",
+   "kicker": "one semantic index, shared by every agent",
+   "date": "2026-09",
+   "status": "live",
+   "tags": [
+    "infra",
+    "local llm"
+   ],
+   "href": "https://github.com/jackdavisonpowell-eng/embedd",
+   "stats": [
+    [
+     "lines",
+     "352"
+    ],
+    [
+     "runs on",
+     "CPU"
+    ],
+    [
+     "stack",
+     "llama.cpp + numpy"
+    ]
+   ],
+   "cover": "embedd.jpg",
+   "slug": "embedd",
+   "html": "<h2>What it is</h2>\n<p>A single always-on semantic index over all my markdown, running on the CPU, that every local agent queries over a small HTTP API.</p>\n<h2>Why it exists</h2>\n<p>Every agent I built loaded its own embedding model and built its own copy of the index over the same notes. Three agents meant three models resident in memory and three redundant indexes of identical files. On a box with 16GB of system RAM that is not a tidiness problem, it is the thing that makes the machine start swapping.</p>\n<h2>How it works</h2>\n<p>One process holds the model and the vectors. Everything else asks it questions over HTTP and gets matches back. It lives on the CPU deliberately, because the GPUs have a better use for their memory and embedding is cheap enough that it does not need them.</p>\n<p>It is llama.cpp for the model, numpy for the vector maths, and nothing else. No vector database, no framework, no service mesh. Three hundred and fifty lines.</p>\n<h2>The hard part</h2>\n<p>Deciding it was allowed to be this small. The obvious move is to reach for a real vector database, and for a corpus of a few thousand markdown notes that is enormous overkill that would have added an install, a schema, a daemon and a failure mode. Knowing when a problem is small is a skill I am still learning and this is the clearest case where I got it right.</p>",
+   "excerpt": "A single always-on semantic index over all my markdown, running on the CPU,\nthat every local agent queries over a small HTTP API.",
+   "file": "embedd.md"
+  },
+  {
+   "title": "scribe",
+   "kicker": "lecture capture, entirely local",
+   "date": "2026-09",
+   "status": "live",
+   "tags": [
+    "voice",
+    "cli"
+   ],
+   "href": "https://github.com/jackdavisonpowell-eng/scribe",
+   "stats": [
+    [
+     "transcribes",
+     "live"
+    ],
+    [
+     "uploads",
+     "0"
+    ],
+    [
+     "lands in",
+     "Obsidian"
+    ]
+   ],
+   "cover": "scribe.jpg",
+   "slug": "scribe",
+   "html": "<h2>What it is</h2>\n<p>Record a lecture, transcribe it live on my own GPU, and have the notes filed straight into my Obsidian vault under the right course and week. A terminal interface, running on my machine, with nothing uploaded anywhere.</p>\n<h2>Why it exists</h2>\n<p>I started at Georgia Southern and immediately hit the thing every transcription service is bad at: I do not want a recording of a room full of people who did not consent to it going to a company. Local transcription is not a preference here, it is the only version of this that is acceptable.</p>\n<p>The second reason is more ordinary. I have severe ADHD, and the gap between hearing something in a lecture and having it exist somewhere I will find it again is where most of my coursework used to die.</p>\n<h2>How it works</h2>\n<p>Audio is captured and fed to a local speech model in chunks as the class runs, so the transcript exists by the time I walk out rather than after a long batch job. The finished notes are written into the vault in the folder structure I already use, which means they are searchable next to everything else I keep.</p>\n<h2>The hard part</h2>\n<p>Live is much harder than batch. A batch transcription can look at the whole recording; a live one has to commit to words before it has heard the end of the sentence. Getting chunk boundaries to fall where they do not cut a word in half, and stitching the pieces without duplicated or dropped phrases at every seam, was the whole problem.</p>",
+   "excerpt": "Record a lecture, transcribe it live on my own GPU, and have the notes filed\nstraight into my Obsidian vault under the right course and week. A terminal\ninterface, running on my machine, with nothing…",
+   "file": "scribe.md"
+  },
+  {
+   "title": "Odysseus",
+   "kicker": "the first autogod.org",
+   "date": "2026-08",
+   "status": "shelved",
+   "tags": [
+    "web"
+   ],
+   "stats": [
+    [
+     "rebuilds",
+     "3"
+    ],
+    [
+     "stopped",
+     "2026-08-26"
+    ]
+   ],
+   "cover": "odysseus.jpg",
+   "slug": "odysseus",
+   "html": "<h2>What it was</h2>\n<p>The original web application behind this domain: a chat interface onto my own local inference, with memory, tools, and a voice. It ran in production, I used it daily, and it went through three rebuilds.</p>\n<h2>Why it is here</h2>\n<p>Because a portfolio that only contains the things that worked is a lie, and this one taught me more than most of the things that did.</p>\n<h2>What it taught me</h2>\n<p>The first version was a fork of somebody else's project, hardened. That was the right call to get running and the wrong call to live in, because every upstream change was a decision about whether to take it. The second version was a clean-sheet rebuild that I set aside before it shipped. The third was a fork again, with tighter discipline about which changes I would accept.</p>\n<p>Along the way it produced the most useful measurement I have taken on this hardware: that the latency I was chasing lived in prefill, not generation. That finding outlived the project and shaped everything since.</p>\n<h2>Why it stopped</h2>\n<p>I turned it off in August 2026. The fleet console does what I actually wanted from it, and keeping a second front door alive was costing more attention than it returned. Stopping something that works, because it is no longer the best use of the attention it consumes, is a harder call than shipping it was.</p>",
+   "excerpt": "The original web application behind this domain: a chat interface onto my own\nlocal inference, with memory, tools, and a voice. It ran in production, I used\nit daily, and it went through three rebuil…",
+   "file": "Odysseus.md"
+  },
+  {
+   "title": "claude-code-usage",
+   "kicker": "where the tokens actually went",
+   "date": "2026-08",
+   "status": "live",
+   "tags": [
+    "cli",
+    "infra"
+   ],
+   "href": "https://github.com/jackdavisonpowell-eng/claude-code-usage",
+   "stats": [
+    [
+     "dependencies",
+     "0"
+    ],
+    [
+     "reads",
+     "local transcripts"
+    ],
+    [
+     "worst find",
+     "1.8B tokens"
+    ]
+   ],
+   "cover": "usage.jpg",
+   "slug": "claude-code-usage",
+   "html": "<h2>What it is</h2>\n<p>A standard-library-only analyzer that reads local agent transcripts and tells you where your tokens went: how much context was re-sent per day, the share burned by each model, the worst individual sessions, and the rate limits actually observed rather than the ones documented.</p>\n<h2>Why it exists</h2>\n<p>I was hitting a weekly cap and had no idea why. The billing view tells you how much you spent, which is the least useful number available, because it does not tell you which behaviour to change.</p>\n<p>The audit that came out of this found the answer and it was ugly: sessions with enormous context polling in a sleep loop for ten hours at a stretch. Three of them had burned 1.8 billion tokens between them doing nothing but waiting. Every one of those wake-ups re-sent the entire conversation.</p>\n<h2>How it works</h2>\n<p>The transcripts are already on disk. It reads them, attributes every request to a day, a model and a session, and reports the shape of the spend. No API calls, no upload, no dependencies to install.</p>\n<h2>The hard part</h2>\n<p>Not the parsing. The hard part was accepting what it showed me. The expensive sessions were not the ones doing hard work, they were the ones doing nothing patiently. That changed how I write agents more than any optimisation I have made since: a wait must cost zero turns, and anything that polls is a bug.</p>",
+   "excerpt": "A standard-library-only analyzer that reads local agent transcripts and tells\nyou where your tokens went: how much context was re-sent per day, the share\nburned by each model, the worst individual se…",
+   "file": "claude-code-usage.md"
+  },
+  {
+   "title": "handmouse",
+   "kicker": "drive the cursor with your finger",
+   "date": "2026-08",
+   "status": "live",
+   "tags": [
+    "vision",
+    "cli"
+   ],
+   "href": "https://github.com/jackdavisonpowell-eng/handmouse",
+   "stats": [
+    [
+     "tracking",
+     "MediaPipe"
+    ],
+    [
+     "click",
+     "pinch"
+    ],
+    [
+     "hardware",
+     "any webcam"
+    ]
+   ],
+   "cover": "handmouse.jpg",
+   "slug": "handmouse",
+   "html": "<h2>What it is</h2>\n<p>Point your index finger at the screen to move the pointer. Pinch to click, and hold the pinch to drag. Any webcam, no special hardware.</p>\n<h2>Why it exists</h2>\n<p>Mostly because I wanted to know whether the gap between the demo version of this and a usable version was as large as I suspected. It was.</p>\n<h2>How it works</h2>\n<p>Hand tracking gives you a set of landmark points per frame. Turning those into a cursor is arithmetic. Turning those into a cursor a person can actually use is signal processing.</p>\n<h2>The hard part</h2>\n<p>Everything after the tracking. Raw landmarks jitter by several pixels frame to frame, so a naive mapping produces a pointer that vibrates constantly and cannot land on anything. Smoothing fixes the jitter and introduces lag, and too much of it makes the cursor feel like it is dragging through syrup.</p>\n<p>Clicking is worse. A pinch is not a binary event, it is a distance that crosses a threshold, and a single threshold means the click chatters on and off while you hold it. The answer is hysteresis: the distance that closes a pinch has to be meaningfully smaller than the distance that opens it again, so a hold stays held.</p>\n<p>None of that shows up in a demo video, which is exactly why every demo of this looks great and almost none of them are usable.</p>",
+   "excerpt": "Point your index finger at the screen to move the pointer. Pinch to click, and\nhold the pinch to drag. Any webcam, no special hardware.",
+   "file": "handmouse.md"
+  },
+  {
+   "title": "loose-ends",
+   "kicker": "a to-do list your agents can write to",
+   "date": "2026-08",
+   "status": "live",
+   "tags": [
+    "cli",
+    "infra"
+   ],
+   "href": "https://github.com/jackdavisonpowell-eng/loose-ends",
+   "stats": [
+    [
+     "lines",
+     "559"
+    ],
+    [
+     "dependencies",
+     "0"
+    ],
+    [
+     "server",
+     "none"
+    ]
+   ],
+   "cover": "loose-ends.jpg",
+   "slug": "loose-ends",
+   "html": "<h2>What it is</h2>\n<p>A shared to-do list that both I and my AI agents write to. One markdown file, no server, no database, no account. I edit it by hand in Obsidian. The agents append to it over SSH when they leave something half-finished.</p>\n<h2>Why it exists</h2>\n<p>Agent sessions end. When one does, everything it knew but did not finish evaporates, and I find out weeks later that a thing I thought was done never was. The fix is not a better memory system, it is a list that outlives the session and that both sides can reach.</p>\n<h2>How it works</h2>\n<p>It is a plain markdown file with checkboxes under an \"Open\" heading, which means Obsidian renders it correctly with no plugin and I can tick things off on my phone. A hand-written line in the right format is adopted automatically the next time the tool runs, so nothing is lost by editing the file directly.</p>\n<p>The command-line side handles the parts a human should not do by hand: deduplicating identical entries, bumping a counter instead of filing a second copy, flagging anything that has sat open for two weeks, and archiving old finished items so the file does not grow forever.</p>\n<h2>The hard part</h2>\n<p>Making it safe to edit from two directions at once. Syncthing carries the file between machines, so two edits in the same window produce a conflict copy. The tool learned to notice those and merge them rather than let a conflicted file sit there silently collecting the entries I thought I had filed.</p>\n<p>The design decision I would defend hardest is having no server. A to-do list that requires a running service is a to-do list that stops working on the day you most need it.</p>",
+   "excerpt": "A shared to-do list that both I and my AI agents write to. One markdown file,\nno server, no database, no account. I edit it by hand in Obsidian. The agents\nappend to it over SSH when they leave somet…",
+   "file": "loose-ends.md"
+  },
+  {
+   "title": "ssh-mesh",
+   "kicker": "every machine reaches every machine",
+   "date": "2026-08",
+   "status": "live",
+   "tags": [
+    "infra"
+   ],
+   "href": "https://github.com/jackdavisonpowell-eng/ssh-mesh",
+   "stats": [
+    [
+     "lines",
+     "205"
+    ],
+    [
+     "config files",
+     "1"
+    ],
+    [
+     "keys moved",
+     "0"
+    ]
+   ],
+   "cover": "ssh-mesh.jpg",
+   "slug": "ssh-mesh",
+   "html": "<h2>What it is</h2>\n<p>One config file listing your machines. Run it, and afterwards any box can <code>ssh &lt;name&gt;</code> any other box, passwordless, by short name.</p>\n<h2>Why it exists</h2>\n<p>I have a laptop, a gaming desktop, an inference server, and a rack box, and I was forever half-configuring the link between two of them at the moment I needed it. Every new machine meant repeating the same fiddly key dance from memory, badly.</p>\n<h2>How it works</h2>\n<p>It reads the list, generates a key on each host where one is missing, and distributes only the public halves. It is idempotent, so the correct way to add a machine is to add a line and run it again — no special path for the first run versus later ones.</p>\n<h2>The hard part</h2>\n<p>The design rule, which is that no private key ever leaves the host it was generated on. It is tempting to generate one key and copy it everywhere, because that is dramatically simpler and it works. It also means one stolen laptop is every machine you own. Doing it properly means more moving parts and a longer first run, and it is the right trade every time.</p>",
+   "excerpt": "One config file listing your machines. Run it, and afterwards any box can\nssh <name> any other box, passwordless, by short name.",
+   "file": "ssh-mesh.md"
+  }
+ ]
+}

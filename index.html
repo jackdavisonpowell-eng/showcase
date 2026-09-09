@@ -352,8 +352,30 @@ const INTRO = {
   .lb .inner{--c:var(--cut);max-width:min(1400px,94vw);max-height:90vh;width:100%;
        display:flex;flex-direction:column;overflow:hidden}
   .lb .shot{aspect-ratio:16/9;max-height:66vh}
-  .lb .lbody{padding:1.1rem 1.3rem 1.3rem;display:flex;flex-direction:column;gap:.55rem;
+  .lb .lbody{padding:1.1rem 1.3rem 1.6rem;display:flex;flex-direction:column;gap:.55rem;
        overflow:auto}
+  .lb .body{margin-top:1.1rem;padding-top:1.2rem;border-top:1px solid var(--line-soft);
+       color:#C6CAD5;font-size:.88rem;line-height:1.76;max-width:46rem}
+  .lb .body h2{font-family:var(--f-d);font-style:italic;font-weight:900;color:var(--text);
+       font-size:1.15rem;text-transform:uppercase;letter-spacing:-.01em;margin:1.9rem 0 .6rem;
+       line-height:1.05}
+  .lb .body h2:first-child{margin-top:0}
+  .lb .body h3{font-family:var(--f-d);font-style:italic;font-weight:800;color:var(--text);
+       font-size:1rem;text-transform:uppercase;margin:1.5rem 0 .5rem}
+  .lb .body p{margin:0 0 1rem;font-size:.88rem;max-width:none}
+  .lb .body b{color:var(--text)}
+  .lb .body a{color:var(--text);text-decoration:underline;text-underline-offset:3px}
+  .lb .body ul,.lb .body ol{margin:0 0 1.1rem;padding-left:1.2rem}
+  .lb .body li{margin:0 0 .4rem}
+  .lb .body blockquote{margin:1.2rem 0;padding:.2rem 0 .2rem 1.1rem;
+       border-left:2px solid var(--line-soft);color:var(--muted);font-style:italic}
+  .lb .body code{font-family:var(--f-m);font-size:.86em;background:rgba(255,255,255,.06);padding:.1em .38em}
+  .lb .body pre{background:rgba(255,255,255,.045);box-shadow:var(--edge);padding:.9rem 1rem;
+       overflow-x:auto;margin:0 0 1.2rem}
+  .lb .body pre code{background:none;padding:0;font-size:.78rem}
+  .lb .body figure{margin:1.5rem 0}
+  .lb .body img,.lb .body video{display:block;width:100%;height:auto;box-shadow:var(--edge)}
+  .lb .body hr{border:0;height:8px;background:var(--hatch);opacity:.3;margin:2rem 0}
   .lb h2{font-size:clamp(1.6rem,3.2vw,2.6rem)}
   .lb p{font-size:.88rem;max-width:70ch}
   .lb .x{position:fixed;top:1.1rem;right:1.2rem;--c:var(--cut-s);border:0;padding:.55rem 1.1rem;
@@ -382,6 +404,7 @@ const INTRO = {
     <a class="hbtn" href="/">Home</a>
     <a class="hbtn" href="/portfolio/">About</a>
     <a class="hbtn on" href="/showcase/">Showcase</a>
+    <a class="hbtn" href="/blog/">Log</a>
     <a class="hbtn" href="https://fleet.autogod.org/">Login</a>
   </nav>
   <span class="count" id="count"></span>
@@ -413,8 +436,8 @@ $("lede").textContent = INTRO.line;
 
 /* newest first. A missing date sorts last rather than to the top — an entry
    you forgot to date should not take the best slot on the page. */
-const ITEMS = [...WORK].sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
-const TAGS = [...new Set(ITEMS.flatMap(w => w.tags || []))].sort();
+let ITEMS = [...WORK].sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
+let TAGS = [...new Set(ITEMS.flatMap(w => w.tags || []))].sort();
 let FILTER = null;
 
 function initials(t) {
@@ -495,6 +518,7 @@ function open(w) {
     ${(w.stats || []).length ? `<div class="reads">${w.stats.map(([k, v]) =>
       `<div><div class="rv">${esc(v)}</div><div class="rk">${esc(k)}</div></div>`).join("")}</div>` : ""}
     ${w.href ? `<div class="tags" style="margin-top:.6rem"><a class="fb" href="${esc(w.href)}" target="_blank" rel="noopener">open it &rarr;</a></div>` : ""}
+    ${w.html ? `<div class="body">${w.html}</div>` : ""}
   </div>`;
   $("lb").classList.add("on");
 }
@@ -504,15 +528,44 @@ $("lb").addEventListener("click", (ev) => { if (ev.target === $("lb")) shut(); }
 addEventListener("keydown", (ev) => { if (ev.key === "Escape") shut(); });
 draw();
 
+/* The cards above are the fallback. The real ones are markdown notes in the
+   Obsidian vault (Site/Projects), turned into projects.json by publish.py —
+   which means a project is written up by editing a note, not this file. If
+   the file is not there, or the fetch fails, the page still works. */
+fetch("projects.json", {cache: "no-store"})
+  .then(r => r.ok ? r.json() : null)
+  .then(d => {
+    const src = d && Array.isArray(d.projects) ? d.projects : [];
+    if (!src.length) return;
+    ITEMS = src.map(p => ({
+      title: p.title,
+      kicker: p.kicker,
+      blurb: p.excerpt,
+      html: p.html,
+      tags: p.tags || [],
+      date: p.date,
+      status: p.status,
+      feature: !!p.feature,
+      href: p.href,
+      stats: p.stats || [],
+      media: p.cover ? {type: "image", src: "media/" + p.cover} : undefined,
+    }));
+    TAGS = [...new Set(ITEMS.flatMap(w => w.tags || []))].sort();
+    draw();
+    ledger();
+  })
+  .catch(() => {});
+
 /* the ledger is derived, never typed — add an entry and these move by
    themselves, which is the whole point of keeping WORK as the one source */
-(function ledger() {
+function ledger() {
   const live = ITEMS.filter(w => w.status === "live").length;
   const latest = ITEMS.map(w => w.date).filter(Boolean)[0] || "\u2014";
   const rows = [["built", ITEMS.length], ["live", live], ["tags", TAGS.length], ["latest", latest]];
   $("ledger").innerHTML = rows.map(([k, v]) =>
     `<div><div class="rv">${esc(v)}</div><div class="rk">${esc(k)}</div></div>`).join("");
-})();
+}
+ledger();
 
 /* the same drifting field as the wall, minus the constellations — three
    parallax depths, one pre-rendered sprite, additive so they bloom */
