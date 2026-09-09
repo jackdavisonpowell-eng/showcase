@@ -293,7 +293,9 @@ const INTRO = {
 
   /* the preview well. No image yet? then a hatched plate with the initials —
      the page has to look finished before it has any content in it. */
-  .shot{position:relative;aspect-ratio:16/9;overflow:hidden;background:rgba(0,0,0,.45);
+  .shot{position:relative;aspect-ratio:16/9;overflow:hidden;background-color:#0B0D12;
+       background-image:repeating-linear-gradient(118deg,
+         rgba(255,255,255,.11) 0 1px,transparent 1px 7px);
        box-shadow:var(--sink);flex:none}
   .card.feat .shot{aspect-ratio:2.4/1}
   .shot img,.shot video,.shot iframe{width:100%;height:100%;object-fit:cover;
@@ -454,7 +456,7 @@ function missingShot(el) {
 function shotHTML(w) {
   const m = w.media;
   let inner = `<div class="ph"><span>${esc(initials(w.title))}</span></div>`;
-  if (m && m.type === "image" && m.src) inner = `<img src="${esc(m.src)}" alt="${esc(w.title)}" loading="lazy" data-t="${esc(w.title)}" onerror="missingShot(this)">`;
+  if (m && m.type === "image" && m.src) inner = `<img src="${esc(m.src)}" alt="" loading="lazy" data-t="${esc(w.title)}" onerror="missingShot(this)">`;
   else if (m && m.type === "video" && m.src) inner = `<video src="${esc(m.src)}"${m.poster ? ` poster="${esc(m.poster)}"` : ""} muted loop playsinline autoplay></video>`;
   else if (m && m.type === "embed" && m.src) inner = `<iframe src="${esc(m.src)}" loading="lazy" title="${esc(w.title)}"></iframe>`;
   const st = w.status ? `<span class="chip ${w.status === "live" ? "live" : ""}">${esc(w.status)}</span>` : "";

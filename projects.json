@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-09T14:28:32",
+ "generated": "2026-09-09T14:55:45",
  "projects": [
   {
    "title": "AUTOGOD",
@@ -31,6 +31,37 @@
    "html": "<h2>What it is</h2>\n<p>AUTOGOD is an autonomous agent that runs on my own hardware, around the clock, without me driving it. It holds a goal, breaks that goal into work, builds the work, and then judges honestly whether what it built was worth building.</p>\n<h2>Why it exists</h2>\n<p>Two Tesla P100s sitting idle overnight is wasted electricity and wasted capability. Every hour those cards are not doing something is an hour I paid for and got nothing back from. AUTOGOD exists so that the answer to \"what is the machine doing right now\" is never \"nothing\".</p>\n<h2>How it works</h2>\n<p>It runs one loop. An idea gets proposed, a plan gets written against it, a prototype gets built, and the result gets polished and pushed onto a shelf where I decide to keep it or kill it. Each stage is a fresh pass, so a bad plan does not quietly poison the build.</p>\n<p>When the queue of real work is empty it is allowed to pick its own project. The constraint is deliberately tight: single file where possible, standard library only, no package manager, no build step, and it has to actually run from a clean shell before it is permitted to mark itself done.</p>\n<h2>The hard part</h2>\n<p>Autonomy is easy to demo and hard to leave running. The version that works is not the one that is cleverest, it is the one that fails safely at three in the morning. Most of the real engineering went into gates rather than capability: cooldowns so it cannot spin, stack caps so it cannot pile work on itself, and a hard rule that it never gets root and never elevates its own privileges.</p>\n<p>The other hard part was honesty. An agent that rates its own work will rate it generously unless the rating is structured. It writes down what it set out to do and what it actually got, separately, and I read both.</p>",
    "excerpt": "AUTOGOD is an autonomous agent that runs on my own hardware, around the clock,\nwithout me driving it. It holds a goal, breaks that goal into work, builds the\nwork, and then judges honestly whether wh…",
    "file": "AUTOGOD.md"
+  },
+  {
+   "title": "The Lab",
+   "kicker": "everything AUTOGOD built in its spare time",
+   "date": "2026-09",
+   "status": "live",
+   "feature": true,
+   "tags": [
+    "agents",
+    "web"
+   ],
+   "href": "https://github.com/jackdavisonpowell-eng/lab",
+   "stats": [
+    [
+     "projects",
+     "27"
+    ],
+    [
+     "lines",
+     "12,136"
+    ],
+    [
+     "human review",
+     "none"
+    ]
+   ],
+   "cover": "lab.jpg",
+   "slug": "the-lab",
+   "html": "<h2>What it is</h2>\n<p>A public repository of twenty-seven small programs, every one of them written by AUTOGOD on its own, unattended, mostly overnight. Nobody reviewed them before they landed. The commit timestamps are real.</p>\n<h2>What is in it</h2>\n<p>A live host dashboard for the machine it runs on. The GPUs drawn as a pair of breathing lungs. My vault's note titles falling as matrix rain. A pixel face with twelve moods, built for the Raspberry Pi on my desk. A gauge cluster for my GR86. A lap timer with a delta strip. A tennis ladder with real ELO. A cutting-layout tool for sewing jeans. Swipe-to-rate procedurally generated horses, which I did not ask for and would not have thought of.</p>\n<h2>Why it is worth showing</h2>\n<p>This is the honest version of the autonomous-agent claim. It is not a demo video and it is not a curated best-of. It is the whole shelf, including the things that turned out to be pointless, with the agent's own rating of each one attached.</p>\n<p>Twenty-two of them are web pages, three are terminal programs, two are data experiments. Each was verified by actually starting it from a clean shell and loading it, not by asking the model whether it worked.</p>\n<h2>The hard part</h2>\n<p>Getting a local 27B model to finish something in one sitting means removing every excuse it has to sprawl. The rules do that work: one file, standard library, no network at runtime, no build step. A model that cannot reach for a package manager has to actually solve the problem in front of it.</p>\n<p>The failure mode I did not expect was ambition. Left unconstrained it would start something enormous and abandon it half-built. Small and finished beats large and theoretical, and the rules are how that gets enforced.</p>",
+   "excerpt": "A public repository of twenty-seven small programs, every one of them written\nby AUTOGOD on its own, unattended, mostly overnight. Nobody reviewed them\nbefore they landed. The commit timestamps are r…",
+   "file": "The Lab.md"
   },
   {
    "title": "FRIDAY",
@@ -115,37 +146,6 @@
    "html": "<h2>What it is</h2>\n<p>A sparring partner. I bring it a half-formed idea, it pushes back on the idea until it is sharp, and only then does it hand the finished brief to worker sessions and relay what they report.</p>\n<h2>Why it exists</h2>\n<p>An assistant that agrees with you is worse than no assistant, because it launders a bad idea into a plan and then you spend two days building the bad idea. What I actually want at the start of a project is someone to tell me the premise is wrong.</p>\n<h2>How it works</h2>\n<p>Two roles kept deliberately separate. The cofounder argues; it does not build. When the idea survives the argument it gets dispatched to worker sessions that do the building, and the cofounder goes back to relaying and critiquing rather than doing the work itself.</p>\n<p>There is a terminal interface and a headset voice loop, because the arguing part genuinely works better out loud than typed. Talking through a bad idea exposes it faster than writing it down does.</p>\n<h2>Where it is</h2>\n<p>Still building. The dispatch side works and the argument side is good; what is not settled is how much authority it should have to say no, and how to keep it from being contrarian for its own sake, which is a different failure and just as useless as agreement.</p>",
    "excerpt": "A sparring partner. I bring it a half-formed idea, it pushes back on the idea\nuntil it is sharp, and only then does it hand the finished brief to worker\nsessions and relay what they report.",
    "file": "The Cofounder.md"
-  },
-  {
-   "title": "The Lab",
-   "kicker": "everything AUTOGOD built in its spare time",
-   "date": "2026-09",
-   "status": "live",
-   "feature": true,
-   "tags": [
-    "agents",
-    "web"
-   ],
-   "href": "https://github.com/jackdavisonpowell-eng/lab",
-   "stats": [
-    [
-     "projects",
-     "27"
-    ],
-    [
-     "lines",
-     "12,136"
-    ],
-    [
-     "human review",
-     "none"
-    ]
-   ],
-   "cover": "lab.jpg",
-   "slug": "the-lab",
-   "html": "<h2>What it is</h2>\n<p>A public repository of twenty-seven small programs, every one of them written by AUTOGOD on its own, unattended, mostly overnight. Nobody reviewed them before they landed. The commit timestamps are real.</p>\n<h2>What is in it</h2>\n<p>A live host dashboard for the machine it runs on. The GPUs drawn as a pair of breathing lungs. My vault's note titles falling as matrix rain. A pixel face with twelve moods, built for the Raspberry Pi on my desk. A gauge cluster for my GR86. A lap timer with a delta strip. A tennis ladder with real ELO. A cutting-layout tool for sewing jeans. Swipe-to-rate procedurally generated horses, which I did not ask for and would not have thought of.</p>\n<h2>Why it is worth showing</h2>\n<p>This is the honest version of the autonomous-agent claim. It is not a demo video and it is not a curated best-of. It is the whole shelf, including the things that turned out to be pointless, with the agent's own rating of each one attached.</p>\n<p>Twenty-two of them are web pages, three are terminal programs, two are data experiments. Each was verified by actually starting it from a clean shell and loading it, not by asking the model whether it worked.</p>\n<h2>The hard part</h2>\n<p>Getting a local 27B model to finish something in one sitting means removing every excuse it has to sprawl. The rules do that work: one file, standard library, no network at runtime, no build step. A model that cannot reach for a package manager has to actually solve the problem in front of it.</p>\n<p>The failure mode I did not expect was ambition. Left unconstrained it would start something enormous and abandon it half-built. Small and finished beats large and theoretical, and the rules are how that gets enforced.</p>",
-   "excerpt": "A public repository of twenty-seven small programs, every one of them written\nby AUTOGOD on its own, unattended, mostly overnight. Nobody reviewed them\nbefore they landed. The commit timestamps are r…",
-   "file": "The Lab.md"
   },
   {
    "title": "embedd",
