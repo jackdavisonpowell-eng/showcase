@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-09T19:04:34",
+ "generated": "2026-09-09T19:11:54",
  "projects": [
   {
    "title": "AUTOGOD",
@@ -26,7 +26,7 @@
      "0"
     ]
    ],
-   "cover": "ladder-second-p100.jpg",
+   "cover": "autogod.jpg",
    "slug": "autogod",
    "html": "<h2>What it is</h2>\n<p>AUTOGOD is an autonomous agent that runs on my own hardware, around the clock, without me driving it. It holds a goal, breaks that goal into work, builds the work, and then judges honestly whether what it built was worth building.</p>\n<h2>Why it exists</h2>\n<p>Two Tesla P100s sitting idle overnight is wasted electricity and wasted capability. Every hour those cards are not doing something is an hour I paid for and got nothing back from. AUTOGOD exists so that the answer to \"what is the machine doing right now\" is never \"nothing\".</p>\n<h2>How it works</h2>\n<p>It runs one loop. An idea gets proposed, a plan gets written against it, a prototype gets built, and the result gets polished and pushed onto a shelf where I decide to keep it or kill it. Each stage is a fresh pass, so a bad plan does not quietly poison the build.</p>\n<p>When the queue of real work is empty it is allowed to pick its own project. The constraint is deliberately tight: single file where possible, standard library only, no package manager, no build step, and it has to actually run from a clean shell before it is permitted to mark itself done.</p>\n<h2>The hard part</h2>\n<p>Autonomy is easy to demo and hard to leave running. The version that works is not the one that is cleverest, it is the one that fails safely at three in the morning. Most of the real engineering went into gates rather than capability: cooldowns so it cannot spin, stack caps so it cannot pile work on itself, and a hard rule that it never gets root and never elevates its own privileges.</p>\n<p>The other hard part was honesty. An agent that rates its own work will rate it generously unless the rating is structured. It writes down what it set out to do and what it actually got, separately, and I read both.</p>",
    "excerpt": "AUTOGOD is an autonomous agent that runs on my own hardware, around the clock,\nwithout me driving it. It holds a goal, breaks that goal into work, builds the\nwork, and then judges honestly whether wh…",
