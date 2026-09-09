@@ -139,6 +139,13 @@ const INTRO = {
        mask-image:linear-gradient(90deg,transparent,#000 20%,#000 80%,transparent)}
   .count{font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);
        white-space:nowrap}
+  .hnav{display:flex;gap:.4rem;flex:none;flex-wrap:wrap;justify-content:flex-end}
+  .hbtn{--c:var(--cut-s);font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;
+       padding:.5rem .9rem;background:var(--key);color:var(--muted);box-shadow:var(--edge);
+       white-space:nowrap;
+       clip-path:polygon(var(--c) 0,100% 0,100% calc(100% - var(--c)),calc(100% - var(--c)) 100%,0 100%,0 var(--c))}
+  .hbtn:hover{background:var(--key-hi);color:var(--text)}
+  .hbtn.on{color:#07080B;background:linear-gradient(180deg,#FFF,#CFD3DD);font-weight:600}
 
   /* ══ the title block + tag filter ══ */
   .lede{padding:1.5rem 1.2rem 1.3rem;margin-bottom:.45rem;
@@ -257,6 +264,12 @@ const INTRO = {
 <header class="top cut plate">
   <span class="wm">autogod<i>.org</i></span>
   <span class="sp"></span>
+  <nav class="hnav">
+    <a class="hbtn" href="/">Home</a>
+    <a class="hbtn" href="/portfolio/">About</a>
+    <a class="hbtn on" href="/showcase/">Showcase</a>
+    <a class="hbtn" href="https://fleet.autogod.org/">Login</a>
+  </nav>
   <span class="count" id="count"></span>
 </header>
 
